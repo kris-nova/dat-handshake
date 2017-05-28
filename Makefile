@@ -38,6 +38,7 @@ server: $(S_OBJECTS)
 clean:
 	-rm -f src/client/*.o
 	-rm -f src/server/*.o
+	-rm -f src/libnetrep/*.o
 	-rm -f client
 	-rm -f server
 

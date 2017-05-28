@@ -37,11 +37,11 @@ int main(int argc , char *argv[]){
     struct iphdr *iph = (struct iphdr *) packet;
     struct tcphdr *tcph = (struct tcphdr *) (packet + sizeof (struct ip));
     struct sockaddr_in sin;
-    struct tcphdr ps;
+    struct tcp_header psh;
 
     // Define the packet
     body = packet + sizeof(struct iphdr) + sizeof(struct tcphdr);
-    strcpy(body , "todo make this a flag");
+    strcpy(body , "todo make this a flag\n");
 
 
     // Build the packet
@@ -66,12 +66,17 @@ int main(int argc , char *argv[]){
     iph->check = csum ((unsigned short *) packet, iph->tot_len);
     iph->saddr = inet_addr(source_ip);
     iph->daddr = sin.sin_addr.s_addr;
-    print_iphdr(iph);
+    printf("\n");
+    printf("\n");
+    printf("IP HEADER");
+    printf("\n");
+    printf("\n");
+    print_iphdr_rfc791(iph);
 
 
     //TCP Header
-    tcph->source = htons (1234);
-    tcph->dest = htons (80);
+    tcph->source = htons (13131);
+    tcph->dest = htons (1313);
     tcph->seq = 0;
     tcph->ack_seq = 0;
     tcph->doff = 5;  //tcp header size
@@ -84,8 +89,32 @@ int main(int argc , char *argv[]){
     tcph->window = htons (5840); /* maximum allowed window size */
     tcph->check = 0; //leave checksum 0 now, filled later by pseudo header
     tcph->urg_ptr = 0;
-    print_tcphdr(tcph);
+    psh.source_address = inet_addr(source_ip);
+    psh.dest_address = sin.sin_addr.s_addr;
+    psh.placeholder = 0;
+    psh.protocol = IPPROTO_TCP;
+    psh.tcp_length = htons(sizeof(struct tcphdr) + strlen(body) );
+    int psize = sizeof(struct tcp_header) + sizeof(struct tcphdr) + strlen(body);
+    packet_ptr = malloc(psize);
+    memcpy(packet_ptr , (char*) &psh , sizeof (struct tcp_header));
+    memcpy(packet_ptr + sizeof(struct tcp_header) , tcph , sizeof(struct tcphdr) + strlen(body));
+    tcph->check = csum( (unsigned short*) packet_ptr , psize);
+    printf("\n");
+    printf("\n");
+    printf("TCP HEADER");
+    printf("\n");
+    printf("\n");
+    print_tcphdr_rfc793(tcph);
 
+
+    // Send the packet
+    if (sendto (s, packet, iph->tot_len ,  0, (struct sockaddr *) &sin, sizeof (sin)) < 0){
+        printf("Failed sending packet!");
+        exit(99);
+    }
+    else{
+        printf ("Packet Send. Length : %d \n" , iph->tot_len);
+    }
 
     return 0;
 
@@ -93,7 +122,8 @@ int main(int argc , char *argv[]){
 }
 
 char* remoteip() {
-    return NIVENLY_IP;
+    return "127.0.0.1";
+    //return NIVENLY_IP;
 }
 
 char* localip() {
