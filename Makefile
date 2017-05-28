@@ -29,8 +29,14 @@ server: $(S_OBJECTS)
 	$(CC) $(S_OBJECTS) -Wall $(LIBS) -o $@
 
 clean:
-	@-rm -f *.o
-	@-rm -f $(TARGET)
+	-rm -f src/client/*.o
+	-rm -f src/server/*.o
+	-rm -f client
+	-rm -f server
+
+run:
+	./server &
+	./client
 
 shell:
-	docker run -i -t -v $(pwd):/tcp -w /tcp --rm base/archlinux:latest ./BUILD && bash
+	docker run -i -t -v $(pwd):/tcp -w /tcp --rm base/archlinux:latest ./BUILD

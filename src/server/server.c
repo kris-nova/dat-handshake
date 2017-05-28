@@ -1,7 +1,8 @@
-#include <stdio.h>
 #include "server.h"
 
-void main()
+
+int main(int argc , char *argv[])
 {
-    printf("server\n");
+
+    return 0;
 }
