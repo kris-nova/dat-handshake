@@ -1,4 +1,4 @@
-#ifndef HEADER_FILE
-#define HEADER_FILE
+#ifndef TCP_SERVER
+#define TCP_SERVER
 
 #endif

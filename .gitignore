@@ -4,3 +4,4 @@ server
 !server/
 src/client/*.o
 src/server/*.o
+include

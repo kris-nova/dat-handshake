@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+ARCH_INCLUDES="/usr/include"
+if [ -z "${1}" ]; then echo "usage: ./FIND $pattern"; exit 1; fi
+grep -rnw ${ARCH_INCLUDES} -e ${1} --color=always | grep ".h"
