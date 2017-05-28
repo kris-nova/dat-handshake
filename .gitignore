@@ -1,6 +1,6 @@
 client
 !client/
-source
-!source/
+server
+!server/
 src/client/*.o
 src/server/*.o
