@@ -1,0 +1,6 @@
+client
+!client/
+source
+!source/
+src/client/*.o
+src/server/*.o
